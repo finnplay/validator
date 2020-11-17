@@ -26,7 +26,7 @@ type Config struct {
 
 // Initialize is
 func Initialize() Config {
-	files := flag.String("schema", "defaults.json", "Comma-separated list of file paths to validate")
+	files := flag.String("files", "", "Comma-separated file paths to validate")
 
 	flag.Parse()
 

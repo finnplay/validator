@@ -18,6 +18,7 @@ func main() {
 	// Initialize Consul config
 	cfgConsul := config.Consul(cfg)
 
+	fmt.Printf("%+v\n", cfg)
 	fmt.Printf("%+v\n", cfgConsul)
 
 	// Get schema file from Consul
