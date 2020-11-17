@@ -24,8 +24,8 @@ type Config struct {
 	ConsulNamespace  string
 }
 
-// Initialize is
-func Initialize() Config {
+// GetConfig is
+func GetConfig() Config {
 	files := flag.String("files", "", "Comma-separated file paths to validate")
 
 	flag.Parse()
@@ -73,8 +73,8 @@ func Initialize() Config {
 	}
 }
 
-// Consul is
-func Consul(cfg Config) api.Config {
+// GetConsulConfig is
+func GetConsulConfig(cfg Config) api.Config {
 
 	consulConfig := api.DefaultConfig()
 

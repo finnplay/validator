@@ -13,10 +13,10 @@ const schemaPath string = "config/component/testing/service/config-validator/sch
 
 func main() {
 	// Initialize flags, env variables, defaults
-	cfg := config.Initialize()
+	cfg := config.GetConfig()
 
 	// Initialize Consul config
-	cfgConsul := config.Consul(cfg)
+	cfgConsul := config.GetConsulConfig(cfg)
 
 	fmt.Printf("%+v\n", cfg)
 	fmt.Printf("%+v\n", cfgConsul)
