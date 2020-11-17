@@ -1,0 +1,1 @@
+module finnplay.com/dmitri.keler/validator/config
