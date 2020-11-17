@@ -1,1 +1,1 @@
-module finnplay.com/dmitri.keler/validator/config
+module github.com/finnplay/validator/config
