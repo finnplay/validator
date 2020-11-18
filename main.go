@@ -1,10 +1,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 
-	"github.com/finnplay/validator/config"
+	"github.com/hashicorp/consul/api"
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v2"
 )
@@ -12,29 +13,30 @@ import (
 const schemaPath string = "config/component/testing/service/config-validator/schema"
 
 func main() {
+	flag.Parse()
+
 	// Initialize flags, env variables, defaults
-	cfg := config.GetConfig()
-
-	// Initialize Consul config
-	cfgConsul := config.GetConsulConfig(cfg)
-
-	fmt.Printf("%+v\n", cfg)
-	fmt.Printf("%+v\n", cfgConsul)
+	config, err := GetConfig()
+	check(err)
 
 	// Get schema file from Consul
-	// schema := getSchema(*schemaType)
+	schema, err := getSchema(*config)
+	check(err)
+
+	// Get file data for validation
+	fileData, err := getFileData(*config)
+	check(err)
+
+	// Run the validation
+	validateSchema(fileData, schema)
+	check(err)
 
 }
 
-/*
-func getSchema(schemaType string) string {
+func getSchema(config Config) (string, error) {
+	keyPath := config.ConsulPrefix + "/" + schemaPath + "/" + config.Schema
 
-	keyPath := schemaPath + "/" + schemaType
-
-	// Initialize default config
-	apiConfig := api.DefaultConfig()
-
-	client, err := api.NewClient(apiConfig)
+	client, err := api.NewClient(config.ConsulConfig)
 	check(err)
 
 	// Get a handle to the KV API
@@ -44,12 +46,11 @@ func getSchema(schemaType string) string {
 	pair, _, err := kv.Get(keyPath, nil)
 	check(err)
 
-	return string(pair.Value)
+	return string(pair.Value), nil
 }
-*/
 
-func prepareConfig(path string) interface{} {
-	result, err := ioutil.ReadFile(path)
+func getFileData(config Config) (interface{}, error) {
+	result, err := ioutil.ReadFile(config.FilePath)
 	check(err)
 
 	var document interface{}
@@ -57,9 +58,9 @@ func prepareConfig(path string) interface{} {
 		panic(err)
 	}
 
-	var config interface{} = convertConfig(document)
+	var fileData interface{} = convertConfig(document)
 
-	return config
+	return fileData, nil
 }
 
 func convertConfig(i interface{}) interface{} {
@@ -78,22 +79,18 @@ func convertConfig(i interface{}) interface{} {
 	return i
 }
 
-func validateSchema(config interface{}, schema string) {
+func validateSchema(fileData interface{}, schema string) (bool, error) {
 	schemaLoader := gojsonschema.NewStringLoader(schema)
-	configLoader := gojsonschema.NewGoLoader(config)
+	configLoader := gojsonschema.NewGoLoader(fileData)
 
 	result, err := gojsonschema.Validate(schemaLoader, configLoader)
-
 	check(err)
 
-	if result.Valid() {
-		fmt.Printf("The document is valid\n")
-	} else {
-		fmt.Printf("The document is not valid. see errors :\n")
-		for _, desc := range result.Errors() {
-			fmt.Printf("- %s\n", desc)
-		}
+	if !result.Valid() {
+		return false, fmt.Errorf("Failed to validate document: %s", result.Errors())
 	}
+
+	return true, nil
 }
 
 func check(e error) {
