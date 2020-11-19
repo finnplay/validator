@@ -16,21 +16,19 @@ func main() {
 	flag.Parse()
 
 	// Initialize flags, env variables, defaults
-	config, err := GetConfig()
-	check(err)
+	config := GetConfig()
 
 	// Get schema file from Consul
-	schema, err := getSchema(*config)
+	schema, err := getSchema(config)
 	check(err)
 
 	// Get file data for validation
-	fileData, err := getFileData(*config)
+	fileData, err := getFileData(config)
 	check(err)
 
 	// Run the validation
-	validateSchema(fileData, schema)
+	err = validateSchema(fileData, schema)
 	check(err)
-
 }
 
 func getSchema(config Config) (string, error) {
@@ -79,7 +77,7 @@ func convertConfig(i interface{}) interface{} {
 	return i
 }
 
-func validateSchema(fileData interface{}, schema string) (bool, error) {
+func validateSchema(fileData interface{}, schema string) error {
 	schemaLoader := gojsonschema.NewStringLoader(schema)
 	configLoader := gojsonschema.NewGoLoader(fileData)
 
@@ -87,14 +85,16 @@ func validateSchema(fileData interface{}, schema string) (bool, error) {
 	check(err)
 
 	if !result.Valid() {
-		return false, fmt.Errorf("Failed to validate document: %s", result.Errors())
+		return fmt.Errorf("Failed to validate document: %s", result.Errors())
 	}
 
-	return true, nil
+	fmt.Print("Template is valid\n")
+	return nil
+
 }
 
 func check(e error) {
 	if e != nil {
-		panic(e.Error())
+		panic(e)
 	}
 }

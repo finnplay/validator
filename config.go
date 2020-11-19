@@ -28,7 +28,7 @@ type Config struct {
 }
 
 // GetConfig is
-func GetConfig() (*Config, error) {
+func GetConfig() Config {
 	err := checkFlags()
 	check(err)
 
@@ -55,14 +55,14 @@ func GetConfig() (*Config, error) {
 	consulConfig.Datacenter = viper.GetString("consul_datacenter")
 	consulConfig.Namespace = viper.GetString("consul_namepsace")
 
-	config := &Config{
+	config := Config{
 		FilePath:     filepath.ToSlash(absPath),
 		Schema:       schemaName,
 		ConsulConfig: consulConfig,
 		ConsulPrefix: viper.GetString("consul_kv_prefix"),
 	}
 
-	return config, nil
+	return config
 }
 
 func checkFlags() error {
