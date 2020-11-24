@@ -13,7 +13,9 @@ import (
 
 const schemaExtension string = ".json"
 
-var path = flag.String("path", "", "File path to validate")
+var path = flag.String("path", "", "Path to use for validation")
+var validateConfig = flag.Bool("config", false, "Validate config file on path against JSON schema")
+var validateStructure = flag.Bool("structure", false, "Validate file and directory structure on path")
 
 func init() {
 	flag.Parse()
@@ -21,45 +23,59 @@ func init() {
 
 // Config is
 type Config struct {
-	FilePath     string
-	Schema       string
-	ConsulConfig *api.Config
-	ConsulPrefix string
+	Path              string
+	Schema            string
+	ValidateConfig    bool
+	ValidateStructure bool
+	ConsulConfig      *api.Config
+	ConsulPrefix      string
 }
 
 // GetConfig is
 func GetConfig() Config {
+	var config Config
+
 	err := checkFlags()
 	check(err)
 
 	absPath, err := filepath.Abs(*path)
 	check(err)
 
-	schemaName, err := getSchemaName(*path)
-	check(err)
+	if *validateConfig {
+		schemaName, err := getSchemaName(*path)
+		check(err)
 
-	viper.SetDefault("consul_address", "127.0.0.1")
-	viper.SetDefault("consul_port", "8500")
-	viper.SetDefault("consul_scheme", "http")
-	viper.SetDefault("consul_datacenter", "dc1")
-	viper.SetDefault("consul_namepsace", "default")
-	viper.SetDefault("consul_kv_prefix", "config")
+		viper.SetDefault("consul_address", "127.0.0.1")
+		viper.SetDefault("consul_port", "8500")
+		viper.SetDefault("consul_scheme", "http")
+		viper.SetDefault("consul_datacenter", "dc1")
+		viper.SetDefault("consul_namepsace", "default")
+		viper.SetDefault("consul_kv_prefix", "monitoring-poc")
 
-	viper.AutomaticEnv()
+		viper.AutomaticEnv()
 
-	consulConfig := api.DefaultConfig()
+		consulConfig := api.DefaultConfig()
 
-	consulConfig.Address = viper.GetString("consul_address") + ":" + viper.GetString("consul_port")
-	consulConfig.Scheme = viper.GetString("consul_scheme")
-	consulConfig.Token = viper.GetString("consul_token")
-	consulConfig.Datacenter = viper.GetString("consul_datacenter")
-	consulConfig.Namespace = viper.GetString("consul_namepsace")
+		consulConfig.Address = viper.GetString("consul_address") + ":" + viper.GetString("consul_port")
+		consulConfig.Scheme = viper.GetString("consul_scheme")
+		consulConfig.Token = viper.GetString("consul_token")
+		consulConfig.Datacenter = viper.GetString("consul_datacenter")
+		consulConfig.Namespace = viper.GetString("consul_namepsace")
 
-	config := Config{
-		FilePath:     filepath.ToSlash(absPath),
-		Schema:       schemaName,
-		ConsulConfig: consulConfig,
-		ConsulPrefix: viper.GetString("consul_kv_prefix"),
+		config = Config{
+			Path:           filepath.ToSlash(absPath),
+			Schema:         schemaName,
+			ValidateConfig: *validateConfig,
+			ConsulConfig:   consulConfig,
+			ConsulPrefix:   viper.GetString("consul_kv_prefix"),
+		}
+	}
+
+	if *validateStructure {
+		config = Config{
+			Path:              filepath.ToSlash(absPath),
+			ValidateStructure: *validateStructure,
+		}
 	}
 
 	return config
@@ -67,11 +83,19 @@ func GetConfig() Config {
 
 func checkFlags() error {
 	if *path == "" {
-		return fmt.Errorf("Path for file to validate was not provided")
+		return fmt.Errorf("Path to use for validation was not provided")
 	}
 
 	if _, err := os.Stat(*path); os.IsNotExist(err) {
 		return fmt.Errorf("File to validate does not exist: %q", *path)
+	}
+
+	if !*validateConfig && !*validateStructure {
+		return fmt.Errorf("Flag on what to validate was not provided")
+	}
+
+	if *validateConfig && *validateStructure {
+		return fmt.Errorf("Please provide either -schema or -structure flags, not both")
 	}
 
 	return nil
@@ -81,7 +105,7 @@ func getSchemaName(path string) (string, error) {
 	extension := filepath.Ext(path)
 
 	if extension != ".yml" && extension != ".yaml" {
-		err := fmt.Errorf("Wrong extension type %q, expecting .yml or .yaml", extension)
+		err := fmt.Errorf("Wrong config file extension type %q, expecting .yml or .yaml", extension)
 		return "", err
 	}
 
