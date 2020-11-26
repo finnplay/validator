@@ -27,7 +27,11 @@ func ValidateSchema(config Config) {
 		fmt.Printf("Config %s is valid\n", config.Path)
 		os.Exit(0)
 	} else {
-		fmt.Printf("Config %s is invalid: %s\n", config.Path, result.Errors())
+		fmt.Printf("Config %s is invalid:\n", config.Path)
+
+		for _, error := range result.Errors() {
+			fmt.Printf("%s\n", error)
+		}
 		os.Exit(1)
 	}
 }
