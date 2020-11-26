@@ -10,8 +10,8 @@ import (
 
 const regexBase string = "/component/[a-zA-Z0-9-.]+(/service/[a-zA-Z0-9-.]+(/[a-zA-Z0-9-.]+)*)?"
 const regexCustomer string = "/customer/[a-zA-Z0-9-.]+(/environment/[a-zA-Z0-9-.]+)?(/site/[a-zA-Z0-9-.]+)?"
-const regexDefaultConfig string = "^.*/config" + regexBase + "$"
-const regexCustomerCofig string = "^.*/config" + regexCustomer + "(" + regexBase + ")?$"
+const regexDefaultConfig string = "^.*config" + regexBase + "$"
+const regexCustomerCofig string = "^.*config" + regexCustomer + "(" + regexBase + ")?$"
 const regexAllowedExtensions string = "(\\.yml|json)?"
 
 func checkPaths(paths []string) []string {
