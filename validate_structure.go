@@ -24,16 +24,17 @@ func checkPaths(paths []string) []string {
 	for _, path := range paths {
 		extension := filepath.Ext(path)
 		path := filepath.ToSlash(path)
-		fmt.Printf("path: %s\n", path)
 
 		switch {
 		case !allowedExtensions.Match([]byte(extension)):
+			fmt.Printf("Wrong extension: %s\n", path)
 			wrongPaths = append(wrongPaths, path)
 		case defaultConfig.Match([]byte(path)):
 			continue
 		case customerConfig.Match([]byte(path)):
 			continue
 		default:
+			fmt.Printf("Wrong default: %s\n", path)
 			wrongPaths = append(wrongPaths, path)
 		}
 	}
