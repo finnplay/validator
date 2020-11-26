@@ -14,8 +14,8 @@ const regexDefaultConfig string = "^.*config" + regexBase + "$"
 const regexCustomerCofig string = "^.*config" + regexCustomer + "(" + regexBase + ")?$"
 const regexAllowedExtensions string = "(\\.yml|json)?"
 
-func checkPaths(paths []string) []string {
-	var errors []string
+func checkPaths(paths []string) string {
+	var errors string
 
 	defaultConfig := regexp.MustCompile(regexDefaultConfig)
 	customerConfig := regexp.MustCompile(regexCustomerCofig)
@@ -27,15 +27,13 @@ func checkPaths(paths []string) []string {
 
 		switch {
 		case !allowedExtensions.Match([]byte(extension)):
-			message := fmt.Sprintf("wrong file extension: %s, allowed: json, yml\n", path)
-			errors = append(errors, message)
+			errors = errors + fmt.Sprintf("wrong file extension: %s, allowed: json, yml\n", path)
 		case defaultConfig.Match([]byte(path)):
 			continue
 		case customerConfig.Match([]byte(path)):
 			continue
 		default:
-			message := fmt.Sprintf("wrong path: %s\n", path)
-			errors = append(errors, message)
+			errors = errors + fmt.Sprintf("wrong path: %s\n", path)
 		}
 	}
 
@@ -49,7 +47,7 @@ func ValidateStructure(config Config) {
 	wrongPaths := checkPaths(paths)
 
 	if len(wrongPaths) > 0 {
-		fmt.Printf("Folder structure check failed, wrong paths: %s\n", wrongPaths)
+		fmt.Printf("Folder structure check failed:\n%s", wrongPaths)
 		os.Exit(1)
 	} else {
 		fmt.Print("Folder structure validated successfully")
