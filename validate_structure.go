@@ -8,7 +8,38 @@ import (
 	"strings"
 )
 
-const regexStructure string = "^.*/(component|customer)(/[a-zA-Z0-9-]+)?(/(service|component|environment)/[a-zA-Z0-9-]+)?(/(service|component|site)/[a-zA-Z0-9-]+)?(/(service|component)/[a-zA-Z0-9-]+)?(/(service)/[a-zA-Z0-9-]+)?(/[a-zA-Z0-9-]+)(/[a-zA-Z0-9-]+)?(/[a-zA-Z0-9-]+)?\\.(yml|json)$"
+const regexBase string = "/component/[a-zA-Z0-9-.]+(/service/[a-zA-Z0-9-.]+(/[a-zA-Z0-9-.]+)*)?"
+const regexCustomer string = "/customer/[a-zA-Z0-9-.]+(/environment/[a-zA-Z0-9-.]+)?(/site/[a-zA-Z0-9-.]+)?"
+const regexDefaultConfig string = "^.*/config" + regexBase + "$"
+const regexCustomerCofig string = "^.*/config" + regexCustomer + "(" + regexBase + ")?$"
+const regexAllowedExtensions string = "(\\.yml|json)?"
+
+func checkPaths(paths []string) []string {
+	var wrongPaths []string
+
+	defaultConfig := regexp.MustCompile(regexDefaultConfig)
+	customerConfig := regexp.MustCompile(regexCustomerCofig)
+	allowedExtensions := regexp.MustCompile(regexAllowedExtensions)
+
+	for _, path := range paths {
+		extension := filepath.Ext(path)
+		path := filepath.ToSlash(path)
+		fmt.Printf("path: %s\n", path)
+
+		switch {
+		case !allowedExtensions.Match([]byte(extension)):
+			wrongPaths = append(wrongPaths, path)
+		case defaultConfig.Match([]byte(path)):
+			continue
+		case customerConfig.Match([]byte(path)):
+			continue
+		default:
+			wrongPaths = append(wrongPaths, path)
+		}
+	}
+
+	return wrongPaths
+}
 
 // ValidateStructure is
 func ValidateStructure(config Config) {
@@ -45,20 +76,4 @@ func getPaths(rootPath string) []string {
 	check(err)
 
 	return results
-}
-
-func checkPaths(paths []string) []string {
-	var wrongPaths []string
-
-	re := regexp.MustCompile(regexStructure)
-
-	for _, path := range paths {
-		path := filepath.ToSlash(path)
-
-		if !re.Match([]byte(path)) {
-			wrongPaths = append(wrongPaths, path)
-		}
-	}
-
-	return wrongPaths
 }
