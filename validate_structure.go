@@ -15,7 +15,7 @@ const regexCustomerCofig string = "^.*config" + regexCustomer + "(" + regexBase 
 const regexAllowedExtensions string = "(\\.yml|json)?"
 
 func checkPaths(paths []string) []string {
-	var wrongPaths []string
+	var errors []string
 
 	defaultConfig := regexp.MustCompile(regexDefaultConfig)
 	customerConfig := regexp.MustCompile(regexCustomerCofig)
@@ -27,19 +27,19 @@ func checkPaths(paths []string) []string {
 
 		switch {
 		case !allowedExtensions.Match([]byte(extension)):
-			fmt.Printf("Wrong extension: %s\n", path)
-			wrongPaths = append(wrongPaths, path)
+			message := fmt.Sprintf("wrong file extension: %s, allowed: json, yml\n", path)
+			errors = append(errors, message)
 		case defaultConfig.Match([]byte(path)):
 			continue
 		case customerConfig.Match([]byte(path)):
 			continue
 		default:
-			fmt.Printf("Wrong default: %s\n", path)
-			wrongPaths = append(wrongPaths, path)
+			message := fmt.Sprintf("wrong path: %s\n", path)
+			errors = append(errors, message)
 		}
 	}
 
-	return wrongPaths
+	return errors
 }
 
 // ValidateStructure is
