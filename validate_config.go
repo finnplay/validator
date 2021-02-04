@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const schemaPath string = "config/component/testing/service/config-validator/schema"
+const schemaPath string = "config/component/automation/validator/schema"
 
 // ValidateSchema is
 func ValidateSchema(config Config) {
