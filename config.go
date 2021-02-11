@@ -16,6 +16,7 @@ const schemaExtension string = ".json"
 var path = flag.String("path", "", "Path to use for validation")
 var validateConfig = flag.Bool("config", false, "Validate config file on path against JSON schema")
 var validateStructure = flag.Bool("structure", false, "Validate file and directory structure on path")
+var printVersion = flag.Bool("version", false, "Print version information")
 
 func init() {
 	flag.Parse()
@@ -27,6 +28,7 @@ type Config struct {
 	Schema            string
 	ValidateConfig    bool
 	ValidateStructure bool
+	PrintVersion      bool
 	ConsulConfig      *api.Config
 	ConsulPrefix      string
 }
@@ -35,46 +37,54 @@ type Config struct {
 func GetConfig() Config {
 	var config Config
 
-	err := checkFlags()
-	check(err)
-
-	absPath, err := filepath.Abs(*path)
-	check(err)
-
-	if *validateConfig {
-		schemaName, err := getSchemaName(*path)
+	if !*printVersion {
+		err := checkFlags()
 		check(err)
 
-		viper.SetDefault("consul_address", "127.0.0.1")
-		viper.SetDefault("consul_port", "8500")
-		viper.SetDefault("consul_scheme", "http")
-		viper.SetDefault("consul_datacenter", "dc1")
-		viper.SetDefault("consul_namepsace", "default")
-		viper.SetDefault("consul_kv_prefix", "monitoring-poc")
+		absPath, err := filepath.Abs(*path)
+		check(err)
 
-		viper.AutomaticEnv()
+		if *validateConfig {
+			schemaName, err := getSchemaName(*path)
+			check(err)
 
-		consulConfig := api.DefaultConfig()
+			viper.SetDefault("consul_address", "127.0.0.1")
+			viper.SetDefault("consul_port", "8500")
+			viper.SetDefault("consul_scheme", "http")
+			viper.SetDefault("consul_datacenter", "dc1")
+			viper.SetDefault("consul_namepsace", "default")
+			viper.SetDefault("consul_kv_prefix", "monitoring-poc")
 
-		consulConfig.Address = viper.GetString("consul_address") + ":" + viper.GetString("consul_port")
-		consulConfig.Scheme = viper.GetString("consul_scheme")
-		consulConfig.Token = viper.GetString("consul_token")
-		consulConfig.Datacenter = viper.GetString("consul_datacenter")
-		consulConfig.Namespace = viper.GetString("consul_namepsace")
+			viper.AutomaticEnv()
 
-		config = Config{
-			Path:           filepath.ToSlash(absPath),
-			Schema:         schemaName,
-			ValidateConfig: *validateConfig,
-			ConsulConfig:   consulConfig,
-			ConsulPrefix:   viper.GetString("consul_kv_prefix"),
+			consulConfig := api.DefaultConfig()
+
+			consulConfig.Address = viper.GetString("consul_address") + ":" + viper.GetString("consul_port")
+			consulConfig.Scheme = viper.GetString("consul_scheme")
+			consulConfig.Token = viper.GetString("consul_token")
+			consulConfig.Datacenter = viper.GetString("consul_datacenter")
+			consulConfig.Namespace = viper.GetString("consul_namepsace")
+
+			config = Config{
+				Path:           filepath.ToSlash(absPath),
+				Schema:         schemaName,
+				ValidateConfig: *validateConfig,
+				ConsulConfig:   consulConfig,
+				ConsulPrefix:   viper.GetString("consul_kv_prefix"),
+			}
+		}
+
+		if *validateStructure {
+			config = Config{
+				Path:              filepath.ToSlash(absPath),
+				ValidateStructure: *validateStructure,
+			}
 		}
 	}
 
-	if *validateStructure {
+	if *printVersion {
 		config = Config{
-			Path:              filepath.ToSlash(absPath),
-			ValidateStructure: *validateStructure,
+			PrintVersion: true,
 		}
 	}
 
