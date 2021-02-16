@@ -12,26 +12,18 @@ const regexBase string = "/component/[a-zA-Z0-9-.]+(/[a-zA-Z0-9-.]+(/[a-zA-Z0-9-
 const regexCustomer string = "/customer/[a-zA-Z0-9-.]+(/environment/[a-zA-Z0-9-.]+)?(/site/[a-zA-Z0-9-.]+)?"
 const regexDefaultConfig string = "^.*config" + regexBase + "$"
 const regexCustomerCofig string = "^.*config" + regexCustomer + "(" + regexBase + ")?$"
-const regexAllowedExtensions string = "(\\.yml|json)?"
 
 func checkPaths(paths []string) string {
 	var errors string
 
 	defaultConfig := regexp.MustCompile(regexDefaultConfig)
 	customerConfig := regexp.MustCompile(regexCustomerCofig)
-	//allowedExtensions := regexp.MustCompile(regexAllowedExtensions)
-
-	//fmt.Printf("Base:%s\nCustomer:%s\n", defaultConfig, customerConfig)
 
 	for _, path := range paths {
 		//extension := filepath.Ext(path)
 		path := filepath.ToSlash(path)
 
-		//fmt.Printf("Path:%s\nExtension:%s\n", path, extension)
-
 		switch {
-		//case !allowedExtensions.Match([]byte(extension)):
-		//	errors = errors + fmt.Sprintf("wrong file extension: %s, allowed: json, yml\n", path)
 		case defaultConfig.Match([]byte(path)):
 			continue
 		case customerConfig.Match([]byte(path)):

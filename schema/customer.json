@@ -29,7 +29,7 @@
             "type": "object",
             "patternProperties": {
                 "[_-A-Za-z0-9]+": {
-                    "$ref": "component.json#/component"
+                    "$ref": "https://raw.githubusercontent.com/finnplay/validator/master/schema/component.json"
                 }
             }
         },
@@ -43,7 +43,7 @@
                             "type": "object",
                             "patternProperties": {
                                 "[_-A-Za-z0-9]+": {
-                                    "$ref": "component.json#/component"
+                                    "$ref": "https://raw.githubusercontent.com/finnplay/validator/master/schema/component.json"
                                 }
                             }
                         }

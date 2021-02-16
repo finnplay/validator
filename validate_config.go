@@ -4,23 +4,19 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v2"
 )
 
-const schemaPath string = "config/component/automation/validator/schema"
-
 // ValidateSchema is
 func ValidateSchema(config Config) {
-	fileData, err := getFileData(config)
+	configFileData, err := getFileData(config)
 	check(err)
 
-	schemaPath, _ := filepath.Abs("schema/" + config.Schema)
-	schemaPath = filepath.ToSlash(schemaPath)
+	schemaURL := "https://raw.githubusercontent.com/finnplay/validator/master/schema/" + config.Schema
 
-	result, isValid := runSchemaValidation(fileData, schemaPath)
+	result, isValid := runSchemaValidation(configFileData, schemaURL)
 	check(err)
 
 	if isValid {
@@ -66,8 +62,8 @@ func convertConfig(i interface{}) interface{} {
 	return i
 }
 
-func runSchemaValidation(fileData interface{}, schemaPath string) (*gojsonschema.Result, bool) {
-	schemaLoader := gojsonschema.NewReferenceLoader("file://" + schemaPath)
+func runSchemaValidation(fileData interface{}, schemaURL string) (*gojsonschema.Result, bool) {
+	schemaLoader := gojsonschema.NewReferenceLoader(schemaURL)
 	configLoader := gojsonschema.NewGoLoader(fileData)
 
 	result, err := gojsonschema.Validate(schemaLoader, configLoader)
