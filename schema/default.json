@@ -5,10 +5,10 @@
     "type": "object",
     "properties": {
         "image": {
-            "$ref": "https://github.com/finnplay/validator/blob/master/schema/image.json"
+            "$ref": "https://github.com/finnplay/validator/raw/master/schema/image.json"
         },
         "monitoring": {
-            "$ref": "https://github.com/finnplay/validator/blob/master/schema/monitoring.json"
+            "$ref": "https://github.com/finnplay/validator/raw/master/schema/monitoring.json"
         },
         "additionalProperties": { "type": "string" }
     }
