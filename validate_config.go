@@ -14,7 +14,7 @@ func ValidateSchema(config Config) {
 	configFileData, err := getFileData(config)
 	check(err)
 
-	schemaURL := "https://github.com/finnplay/validator/blob/master/schema/" + config.Schema
+	schemaURL := "https://github.com/finnplay/validator/raw/master/schema/" + config.Schema
 
 	fmt.Printf("Using schema URL: %s\n", schemaURL)
 
