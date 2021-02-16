@@ -1,0 +1,19 @@
+{
+    "$id": "image",
+    "title": "Image configuration",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "version": {
+            "type": "string",
+            "pattern": "^[0-9]+.[0-9]+.[0-9]+$"
+        },
+        "source": {
+            "type": "string",
+            "enum": ["finnplay-docker-repository", "public-docker-hub"]
+        }
+    }
+}

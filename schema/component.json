@@ -1,0 +1,16 @@
+{
+    "$id": "component",
+    "title": "Component",
+    "description": "A platform component",
+    "type": "object",
+    "properties": {
+        "global": {
+            "description": "Global config",
+            "$ref": "global.json#/global"
+        },
+        "^((?!global).)*$": {
+            "description": "Basic config",
+            "$ref": "default.json#/default"
+        }  
+    }
+}

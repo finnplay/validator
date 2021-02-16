@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
-	"github.com/hashicorp/consul/api"
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v2"
 )
@@ -14,13 +14,13 @@ const schemaPath string = "config/component/automation/validator/schema"
 
 // ValidateSchema is
 func ValidateSchema(config Config) {
-	schema, err := getSchema(config)
-	check(err)
-
 	fileData, err := getFileData(config)
 	check(err)
 
-	result, isValid := runSchemaValidation(fileData, schema)
+	schemaPath, _ := filepath.Abs("schema/" + config.Schema)
+	schemaPath = filepath.ToSlash(schemaPath)
+
+	result, isValid := runSchemaValidation(fileData, schemaPath)
 	check(err)
 
 	if isValid {
@@ -34,22 +34,6 @@ func ValidateSchema(config Config) {
 		}
 		os.Exit(1)
 	}
-}
-
-func getSchema(config Config) (string, error) {
-	keyPath := config.ConsulPrefix + "/" + schemaPath + "/" + config.Schema
-
-	client, err := api.NewClient(config.ConsulConfig)
-	check(err)
-
-	// Get a handle to the KV API
-	kv := client.KV()
-
-	// Lookup the pair
-	pair, _, err := kv.Get(keyPath, nil)
-	check(err)
-
-	return string(pair.Value), nil
 }
 
 func getFileData(config Config) (interface{}, error) {
@@ -82,8 +66,8 @@ func convertConfig(i interface{}) interface{} {
 	return i
 }
 
-func runSchemaValidation(fileData interface{}, schema string) (*gojsonschema.Result, bool) {
-	schemaLoader := gojsonschema.NewStringLoader(schema)
+func runSchemaValidation(fileData interface{}, schemaPath string) (*gojsonschema.Result, bool) {
+	schemaLoader := gojsonschema.NewReferenceLoader("file://" + schemaPath)
 	configLoader := gojsonschema.NewGoLoader(fileData)
 
 	result, err := gojsonschema.Validate(schemaLoader, configLoader)

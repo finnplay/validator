@@ -1,0 +1,62 @@
+{
+    "$id": "customer",
+    "title": "Customer",
+    "description": "A platform customer",
+    "type": "object",
+    "properties": {
+        "enabled": {
+            "description": "",
+            "type": "string"
+        },
+        "global": {
+            "description": "Global config",
+            "$ref": "global.json#/global"
+        },
+        "contacts": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "alert": {
+                        "$ref": "#/definitions/email"
+                    },
+                    "primary": {
+                        "$ref": "#/definitions/email"
+                    }
+                }
+            }
+        },
+        "component": {
+            "type": "object",
+            "patternProperties": {
+                "[_-A-Za-z0-9]+": {
+                    "$ref": "component.json#/component"
+                }
+            }
+        },
+        "environment": {
+            "type": "object",
+            "patternProperties": {
+                "prod|stage": {
+                    "type": "object",
+                    "properties": {
+                        "component": {
+                            "type": "object",
+                            "patternProperties": {
+                                "[_-A-Za-z0-9]+": {
+                                    "$ref": "component.json#/component"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "definitions": {
+        "email": {
+            "type": "string",
+            "pattern": "^.*@.*\\..*$"
+        }
+    }
+}

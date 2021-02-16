@@ -1,0 +1,17 @@
+{
+    "$id": "global",
+    "title": "Global configuration",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "enabled": {
+            "type": "string"
+        },
+        "monitoring": {
+            "$ref": "monitoring.json#/monitoring"
+        },
+        "image": {
+            "$ref": "image.json#/image"
+      }
+    }
+}

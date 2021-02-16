@@ -19,19 +19,19 @@ func checkPaths(paths []string) string {
 
 	defaultConfig := regexp.MustCompile(regexDefaultConfig)
 	customerConfig := regexp.MustCompile(regexCustomerCofig)
-	allowedExtensions := regexp.MustCompile(regexAllowedExtensions)
+	//allowedExtensions := regexp.MustCompile(regexAllowedExtensions)
 
 	//fmt.Printf("Base:%s\nCustomer:%s\n", defaultConfig, customerConfig)
 
 	for _, path := range paths {
-		extension := filepath.Ext(path)
+		//extension := filepath.Ext(path)
 		path := filepath.ToSlash(path)
 
 		//fmt.Printf("Path:%s\nExtension:%s\n", path, extension)
 
 		switch {
-		case !allowedExtensions.Match([]byte(extension)):
-			errors = errors + fmt.Sprintf("wrong file extension: %s, allowed: json, yml\n", path)
+		//case !allowedExtensions.Match([]byte(extension)):
+		//	errors = errors + fmt.Sprintf("wrong file extension: %s, allowed: json, yml\n", path)
 		case defaultConfig.Match([]byte(path)):
 			continue
 		case customerConfig.Match([]byte(path)):

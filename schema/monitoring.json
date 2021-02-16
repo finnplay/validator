@@ -1,0 +1,132 @@
+{
+    "$id": "monitoring",
+    "title": "Monitoring configuration",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "enabled": {
+            "type": "string"
+        },
+        "scrape_config": {
+            "description": "",
+            "type": "object",
+            "properties": {
+                "metrics_path": {
+                    "type": "string",
+                    "pattern": "^/.*$"
+                },
+                "targets": {
+                    "type": "string",
+                    "enum": ["consul_sd", "static"]
+                },
+                "auth_type": {
+                    "type": "string",
+                    "enum": ["basic_auth", "bearer_token"]
+                },
+                "credentials": {
+                    "type": "string"
+                },
+                "additionalProperties": false
+            }
+        },
+        "relabel_config": {
+            "description": "",
+            "type": "object",
+            "patternProperties": {
+                "^[_-a-z]*$": {
+                    "properties": {
+                        "source_labels": {
+                            "type": "string"
+                        },
+                        "separator": {
+                            "type": "string"
+                        },
+                        "target_label": {
+                            "type": "string"
+                        },
+                        "regex": {
+                            "type": "string"
+                        },
+                        "modulus": {
+                            "type": "string"
+                        },
+                        "replacement": {
+                            "type": "string"
+                        },
+                        "action": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        },
+        "alerting_rule": {
+            "description": "",
+            "type": "object",
+            "patternProperties": {
+                "^[_-a-z]*$": {
+                    "properties": {
+                        "expression": {
+                            "type": "string"
+                        },
+                        "condition": {
+                            "type": "string",
+                            "pattern": "(==|!=|>|<|>=|<=) *[.,0-9]+"
+                        },
+                        "for": {
+                            "type": "string",
+                            "pattern": "[0-9]+(s|m|h)"
+                        },
+                        "labels": {
+                            "type": "object",
+                            "properties": {
+                                "severity": {
+                                    "type": "string",
+                                    "enum": ["low", "medium", "high", "critical"]
+                                },
+                                "impact": {
+                                    "type": "string",
+                                    "enum": ["low", "medium", "high", "critical"]
+                                }
+                            },
+                            "additionalProperties": true
+                        },
+                        "annotations": {
+                            "type": "object",
+                            "properties": {
+                                "summary": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        },
+        "recording_rule": {
+            "description": "",
+            "type": "object",
+            "patternProperties": {
+                "^[_-a-z]*$": {
+                    "properties": {
+                        "expression": {
+                            "type": "string"
+                        },
+                        "labels": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            }
+        }
+    },
+    "additionalProperties": false
+}

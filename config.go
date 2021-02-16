@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
+	"regexp"
 
 	"github.com/hashicorp/consul/api"
 	"github.com/spf13/viper"
@@ -112,6 +112,8 @@ func checkFlags() error {
 }
 
 func getSchemaName(path string) (string, error) {
+	schema := ""
+
 	extension := filepath.Ext(path)
 
 	if extension != ".yml" && extension != ".yaml" {
@@ -121,23 +123,36 @@ func getSchemaName(path string) (string, error) {
 
 	absPath, err := filepath.Abs(path)
 	check(err)
+	path = filepath.ToSlash(absPath)
 
-	dir := filepath.Dir(absPath)
-	standardDir := filepath.ToSlash(dir)
-	dirItems := strings.Split(standardDir, "/")
-	schema := dirItems[len(dirItems)-1]
+	// component 	= component/component_name.yml
+	// global 		= component/component_name/global.yml
+	// subcomponent = component/component_name/subcomponent_name.yml
+	// customer 	= customer/customer_name.yml
+	// environment	= cutomer/customer_name/environment/environment_name.yml
+	// site 		= cutomer/customer_name/environment/environment_name/site/site_name.yml
+	// default
 
-	err = schemaNameIsValid(schema)
-	check(err)
+	globalConfig := regexp.MustCompile(".*global\\.yml")
+	componentConfig := regexp.MustCompile(".*component/[a-zA-Z0-9-_.]+\\.yml")
+	customerConfig := regexp.MustCompile(".*customer/[a-zA-Z0-9-_.]+\\.yml")
+	environmentConfig := regexp.MustCompile(".*environment/[a-zA-Z0-9-_.]+\\.yml")
+	siteConfig := regexp.MustCompile(".*site/[a-zA-Z0-9-_.]+\\.yml")
 
-	return schema + schemaExtension, nil
-}
-
-func schemaNameIsValid(name string) error {
-	switch name {
-	case "customer", "environment", "component", "site":
-		return nil
+	switch {
+	case globalConfig.Match([]byte(path)):
+		schema = "global"
+	case componentConfig.Match([]byte(path)):
+		schema = "component"
+	case customerConfig.Match([]byte(path)):
+		schema = "customer"
+	case environmentConfig.Match([]byte(path)):
+		schema = "environment"
+	case siteConfig.Match([]byte(path)):
+		schema = "site"
+	default:
+		schema = "default"
 	}
 
-	return fmt.Errorf("Schema name %q that was extracted from file path is not valid", name)
+	return schema + schemaExtension, nil
 }

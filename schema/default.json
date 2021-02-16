@@ -1,0 +1,15 @@
+{
+    "$id": "default",
+    "title": "Default configuration",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "image": {
+            "$ref": "file://schema/image.json"
+        },
+        "monitoring": {
+            "$ref": "file://schema/monitoring.json"
+        },
+        "additionalProperties": { "type": "string" }
+    }
+}
