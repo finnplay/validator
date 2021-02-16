@@ -10,7 +10,7 @@
         },
         "global": {
             "description": "Global config",
-            "$ref": "global.json#/global"
+            "$ref": "https://raw.githubusercontent.com/finnplay/validator/master/schema/global.json"
         },
         "contacts": {
             "type": "object",
