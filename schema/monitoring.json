@@ -17,7 +17,7 @@
                 },
                 "targets": {
                     "type": "string",
-                    "enum": ["consul_sd", "static"]
+                    "enum": ["consul_service_discovery", "static"]
                 },
                 "auth_type": {
                     "type": "string",
