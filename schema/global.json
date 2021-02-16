@@ -8,10 +8,10 @@
             "type": "string"
         },
         "monitoring": {
-            "$ref": "https://raw.githubusercontent.com/finnplay/validator/master/schema/monitoring.json"
+            "$ref": "https://github.com/finnplay/validator/blob/master/schema/monitoring.json"
         },
         "image": {
-            "$ref": "https://raw.githubusercontent.com/finnplay/validator/master/schema/image.json"
+            "$ref": "https://github.com/finnplay/validator/blob/master/schema/image.json"
       }
     }
 }

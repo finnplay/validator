@@ -6,11 +6,11 @@
     "properties": {
         "global": {
             "description": "Global config",
-            "$ref": "https://raw.githubusercontent.com/finnplay/validator/master/schema/global.json"
+            "$ref": "https://github.com/finnplay/validator/blob/master/schema/global.json"
         },
         "^((?!global).)*$": {
             "description": "Basic config",
-            "$ref": "https://raw.githubusercontent.com/finnplay/validator/master/schema/default.json"
+            "$ref": "https://github.com/finnplay/validator/blob/master/schema/default.json"
         }  
     }
 }
