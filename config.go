@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"github.com/hashicorp/consul/api"
 	"github.com/spf13/viper"
 )
 
@@ -29,8 +28,6 @@ type Config struct {
 	ValidateConfig    bool
 	ValidateStructure bool
 	PrintVersion      bool
-	ConsulConfig      *api.Config
-	ConsulPrefix      string
 }
 
 // GetConfig is
@@ -48,29 +45,12 @@ func GetConfig() Config {
 			schemaName, err := getSchemaName(*path)
 			check(err)
 
-			viper.SetDefault("consul_address", "127.0.0.1")
-			viper.SetDefault("consul_port", "8500")
-			viper.SetDefault("consul_scheme", "http")
-			viper.SetDefault("consul_datacenter", "dc1")
-			viper.SetDefault("consul_namepsace", "default")
-			viper.SetDefault("consul_kv_prefix", "monitoring-poc")
-
 			viper.AutomaticEnv()
-
-			consulConfig := api.DefaultConfig()
-
-			consulConfig.Address = viper.GetString("consul_address") + ":" + viper.GetString("consul_port")
-			consulConfig.Scheme = viper.GetString("consul_scheme")
-			consulConfig.Token = viper.GetString("consul_token")
-			consulConfig.Datacenter = viper.GetString("consul_datacenter")
-			consulConfig.Namespace = viper.GetString("consul_namepsace")
 
 			config = Config{
 				Path:           filepath.ToSlash(absPath),
 				Schema:         schemaName,
 				ValidateConfig: *validateConfig,
-				ConsulConfig:   consulConfig,
-				ConsulPrefix:   viper.GetString("consul_kv_prefix"),
 			}
 		}
 
