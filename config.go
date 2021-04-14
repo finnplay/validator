@@ -118,6 +118,7 @@ func getSchemaName(path string) (string, error) {
 	customerConfig := regexp.MustCompile(".*customer/[a-zA-Z0-9-_.]+\\.yml")
 	environmentConfig := regexp.MustCompile(".*environment/[a-zA-Z0-9-_.]+\\.yml")
 	siteConfig := regexp.MustCompile(".*site/[a-zA-Z0-9-_.]+\\.yml")
+	prometheusConfig := regexp.MustCompile(".*prometheus\\.yml")
 
 	switch {
 	case globalConfig.Match([]byte(path)):
@@ -130,6 +131,8 @@ func getSchemaName(path string) (string, error) {
 		schema = "environment"
 	case siteConfig.Match([]byte(path)):
 		schema = "site"
+	case prometheusConfig.Match([]byte(path)):
+		schema = "prometheus"
 	default:
 		schema = "default"
 	}

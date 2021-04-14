@@ -1,0 +1,63 @@
+{
+    "$id": "prometheus",
+    "title": "Prometheus configuration",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "scrape_interval": {
+            "type": "string",
+            "pattern": "[0-9]+(s|m|h)"
+        },
+        "scrape_timeout": {
+            "type": "string",
+            "pattern": "[0-9]+(s|m|h)"
+        },
+        "evaluation_interval": {
+            "type": "string",
+            "pattern": "[0-9]+(s|m|h)"
+        },
+        "alertmanager": {
+            "description": "",
+            "type": "object",
+            "properties": {
+                "addresses": {
+                    "type": "string",
+                    "pattern": "([a-zA-Z0-9-]+,?)+"
+                },
+                "timeout": {
+                    "type": "string",
+                    "pattern": "[0-9]+(s|m|h)"
+                },
+                "scheme": {
+                    "type": "string",
+                    "enum": ["http", "https"]
+                },
+                "auth_config": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": ["basic_auth"]
+                        },
+                        "credentials": {
+                            "type": "string"
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "tls_config": {
+                    "type": "object",
+                    "properties": {
+                        "ca_file": {
+                            "type": "string",
+                            "pattern": "^(\/[a-zA-Z0-9._-]+)*\/[a-zA-Z0-9._-]+\\.(crt|pem|pub|key)$"
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    },
+    "additionalProperties": false
+}

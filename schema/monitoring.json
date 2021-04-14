@@ -15,16 +15,36 @@
                     "type": "string",
                     "pattern": "^/.*$"
                 },
-                "targets": {
+                "scrape_interval": {
                     "type": "string",
-                    "enum": ["consul_service_discovery", "static"]
+                    "pattern": "[0-9]+(s|m|h)"
                 },
-                "auth_type": {
+                "scrape_timeout": {
                     "type": "string",
-                    "enum": ["basic_auth", "bearer_token"]
+                    "pattern": "[0-9]+(s|m|h)"
                 },
-                "credentials": {
-                    "type": "string"
+                "auth_config": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": ["basic_auth"]
+                        },
+                        "credentials": {
+                            "type": "string"
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "target_config": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": ["consul_service_discovery", "static"]
+                        },
+                        "additionalProperties": false
+                    }
                 },
                 "additionalProperties": false
             }
@@ -48,13 +68,14 @@
                             "type": "string"
                         },
                         "modulus": {
-                            "type": "string"
+                            "type": "integer"
                         },
                         "replacement": {
                             "type": "string"
                         },
                         "action": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": ["replace", "keep", "drop"]
                         }
                     },
                     "additionalProperties": false
@@ -115,6 +136,9 @@
             "patternProperties": {
                 "^[_-a-z]*$": {
                     "properties": {
+                        "record": {
+                            "type": "string"
+                        },
                         "expression": {
                             "type": "string"
                         },
