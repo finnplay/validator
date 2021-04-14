@@ -41,7 +41,7 @@
                     "properties": {
                         "type": {
                             "type": "string",
-                            "enum": ["consul_service_discovery", "static"]
+                            "enum": ["consul_service_discovery", "rancher_dns"]
                         },
                         "additionalProperties": false
                     }
