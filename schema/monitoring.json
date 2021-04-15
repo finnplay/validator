@@ -13,15 +13,15 @@
             "properties": {
                 "metrics_path": {
                     "type": "string",
-                    "pattern": "^/.*$"
+                    "pattern": "^(/[a-zA-Z]+)+$"
                 },
                 "scrape_interval": {
                     "type": "string",
-                    "pattern": "[0-9]+(s|m|h)"
+                    "pattern": "^((([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?|0)$"
                 },
                 "scrape_timeout": {
                     "type": "string",
-                    "pattern": "[0-9]+(s|m|h)"
+                    "pattern": "^((([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?|0)$"
                 },
                 "auth_config": {
                     "type": "object",
@@ -41,7 +41,10 @@
                     "properties": {
                         "type": {
                             "type": "string",
-                            "enum": ["consul_service_discovery", "rancher_dns"]
+                            "enum": ["consul_service_discovery", "static"]
+                        },
+                        "addresses": {
+                            "type": "string"
                         },
                         "additionalProperties": false
                     }
@@ -93,11 +96,11 @@
                         },
                         "condition": {
                             "type": "string",
-                            "pattern": "(==|!=|>|<|>=|<=) *[.,0-9]+"
+                            "pattern": "^(==|!=|>|<|>=|<=) ?[0-9.]+$"
                         },
-                        "for": {
+                        "duration": {
                             "type": "string",
-                            "pattern": "[0-9]+(s|m|h)"
+                            "pattern": "^((([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?|0)$"
                         },
                         "labels": {
                             "type": "object",
@@ -147,6 +150,10 @@
                             "properties": {}
                         }
                     },
+                    "required": [
+                        "record",
+                        "expression"
+                    ],
                     "additionalProperties": false
                 }
             }
