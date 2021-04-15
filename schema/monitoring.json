@@ -57,7 +57,7 @@
             "description": "",
             "type": "object",
             "patternProperties": {
-                "^[_-a-z]*$": {
+                "^[-_a-z]*$": {
                     "properties": {
                         "source_labels": {
                             "type": "string"
@@ -90,7 +90,7 @@
             "description": "",
             "type": "object",
             "patternProperties": {
-                "^[_-a-z]*$": {
+                "^[-_a-z]*$": {
                     "properties": {
                         "expression": {
                             "type": "string"
@@ -138,7 +138,7 @@
             "description": "",
             "type": "object",
             "patternProperties": {
-                "^[_-a-z]*$": {
+                "^[-_a-z]*$": {
                     "properties": {
                         "record": {
                             "type": "string"
