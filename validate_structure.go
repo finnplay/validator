@@ -10,8 +10,8 @@ import (
 
 const regexBase string = "/component/[a-zA-Z0-9-.]+(/[a-zA-Z0-9-.]+(/[a-zA-Z0-9-.]+)*)?"
 const regexCustomer string = "/customer/[a-zA-Z0-9-.]+(/environment/[a-zA-Z0-9-.]+)?(/site/[a-zA-Z0-9-.]+)?"
-const regexDefaultConfig string = "^.*config" + regexBase + "$"
-const regexCustomerCofig string = "^.*config" + regexCustomer + "(" + regexBase + ")?$"
+const regexDefaultConfig string = "^.*" + regexBase + "$"
+const regexCustomerCofig string = "^.*" + regexCustomer + "(" + regexBase + ")?$"
 
 func checkPaths(paths []string) string {
 	var errors string
