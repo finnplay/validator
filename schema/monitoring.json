@@ -13,7 +13,7 @@
             "properties": {
                 "metrics_path": {
                     "type": "string",
-                    "pattern": "^(/[a-zA-Z]+)+$"
+                    "pattern": "^(/[a-zA-Z-]*)+$"
                 },
                 "scrape_interval": {
                     "type": "string",
