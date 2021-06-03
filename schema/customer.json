@@ -28,7 +28,7 @@
         "component": {
             "type": "object",
             "patternProperties": {
-                "[_-A-Za-z0-9]+": {
+                "[-_A-Za-z0-9]+": {
                     "$ref": "https://github.com/finnplay/validator/raw/master/schema/component.json"
                 }
             }
@@ -42,7 +42,7 @@
                         "component": {
                             "type": "object",
                             "patternProperties": {
-                                "[_-A-Za-z0-9]+": {
+                                "[-_A-Za-z0-9]+": {
                                     "$ref": "https://github.com/finnplay/validator/raw/master/schema/component.json"
                                 }
                             }
