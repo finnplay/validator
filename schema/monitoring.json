@@ -7,6 +7,14 @@
         "enabled": {
             "type": "string"
         },
+        "params": {
+            "description": "",
+            "type": "object",
+            "properties": {
+                "module": {
+                    "type": "string"
+                }
+            },
         "scrape_config": {
             "description": "",
             "type": "object",
