@@ -14,7 +14,8 @@
                 "module": {
                     "type": "string"
                 }
-            },
+            }
+        },
         "scrape_config": {
             "description": "",
             "type": "object",
