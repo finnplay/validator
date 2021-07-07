@@ -121,14 +121,20 @@
                             "properties": {
                                 "severity": {
                                     "type": "string",
-                                    "enum": ["low", "medium", "high", "critical"]
+                                    "enum": ["low", "warning", "high", "critical"]
                                 },
                                 "impact": {
                                     "type": "string",
-                                    "enum": ["low", "medium", "high", "critical"]
+                                    "enum": ["low", "warning", "high", "critical"]
+                                },
+                                "dashboard": {
+                                    "type": "string"
+                                },
+                                "panel": {
+                                    "type": "string"
                                 }
                             },
-                            "additionalProperties": true
+                            "additionalProperties": false
                         },
                         "annotations": {
                             "type": "object",
